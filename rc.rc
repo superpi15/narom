@@ -1,0 +1,8 @@
+r 1o      
+r2 2o
+
+n0 n3 2o
+n2 n1 1f
+n1 n4 r 
+n3 n8 r
+n6 n7 r2
