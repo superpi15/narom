@@ -28,6 +28,13 @@ Generate KCL system
 	n3  n4  g3
 	n4 gnd  c3
 ## Result
+	building mna ... 
+	  0: n1
+	  1: n2
+	  2: n3
+	  3: n4
+	  4: n5
+	  5: 	n1 (+  v1  -) gnd
 	susceptance matrix:
 	          0          0          0          0          0          0
 	          0         c1          0          0          0          0
