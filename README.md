@@ -28,7 +28,8 @@ Generate KCL system
 	n3  n4  g3
 	n4 gnd  c3
 ## Result
-susceptance matrix: 
+susceptance matrix:
+
 	          0          0          0          0          0          0
 	          0         c1          0          0          0          0
 	          0          0         c2          0          0          0
