@@ -11,6 +11,8 @@ Generate KCL system
 	* capacitor: farad 
 
 ## Example 
+![image](https://github.com/superpi15/narom/rc.png)
+
 	g1 1s
 	g2 2s
 	g3 3s
@@ -25,3 +27,20 @@ Generate KCL system
 	n3 gnd  c2
 	n3  n4  g3
 	n4 gnd  c3
+## Result
+susceptance matrix: 
+	          0          0          0          0          0          0
+	          0         c1          0          0          0          0
+	          0          0         c2          0          0          0
+	          0          0          0         c3        -c3          0
+	          0          0          0        -c3         c3          0
+	          0          0          0          0          0          0
+	conductance matrix: 
+	         g1        -g1          0          0          0         -1
+	        -g1      g1+g2        -g2          0          0          0
+	          0        -g2      g2+g3        -g3          0          0
+	          0          0        -g3         g3          0          0
+	          0          0          0          0         g4          0
+	          1          0          0          0          0          0
+	excitation vector: 
+	          0          0          0          0          0         v1
