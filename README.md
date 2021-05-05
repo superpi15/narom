@@ -11,7 +11,7 @@ Generate KCL system
 	* capacitor: farad 
 
 ## Example 
-![image](https://github.com/superpi15/narom/rc.png)
+![image](https://github.com/superpi15/narom/blob/main/rc.png)
 
 	g1 1s
 	g2 2s
