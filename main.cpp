@@ -25,5 +25,7 @@ int main( int argc, char ** argv ){
 	if( !rcsys.parse( rcfileIn ) ){
 		return 0;
 	}
+	rcsys.mna();
+	rcsys.printPos2Ent();
 	return 1;
 }

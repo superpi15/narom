@@ -1,14 +1,16 @@
-r1 1o
-r2 2o
-r3 3o
+g1 1s
+g2 0.5s
+g3 0.33s
+g4 0.25s
 c1 3f
 c2 2f
 c3 1f
 v1 1v
 n1 gnd  v1
-n2  n1  r1
+n2  n1  g1
 n2 gnd  c1
-n2  n3  r2
+n2  n3  g2
 n3 gnd  c2
-n3  n4  r3
-n4 gnd  c3
+n3  n4  g3
+n5  n4  c3
+n5 gnd  g4

@@ -14,24 +14,27 @@ public:
 	typedef enum {
 		Undef
 		, Node
-		, Ohm
+		, Sie
 		, Far
+		, Hen
 		, Vlt
 		, Amp
 		, Gnd
 	} Type_t;
 	int id;
+	int vid; // nodal vector index
 	std::string name;
 	std::multimap<int,int> conn; // < dest, bridge id>
 	float attr;
 	Type_t type;
-	RcDev_t(int nid):id(nid),type(Undef),attr(0){}
+	RcDev_t(int nid):id(nid),type(Undef),attr(0),vid(-1){}
 	const char * typeName(){
 		switch(type){
 			case Undef: return "Undef";
 			case  Node: return "Node";
-			case   Ohm: return "Resistor";
+			case   Sie: return "Conductor";
 			case   Far: return "Capacitor";
+			case   Hen: return "Inductor";
 			case   Vlt: return "V source";
 			case   Amp: return "I source";
 			case   Gnd: return "Ground";
@@ -42,6 +45,7 @@ public:
 		return Vlt == type || Amp == type;
 	}
 	bool isDevice() const { return Node != type && Gnd != type; }
+	bool needCurr() const { return Vlt == type || Hen == type; }
 	void print(){
 		printf("%12s %12s id= %4d attr= %12.5f (Type = %s)\n", typeName(), name.c_str(), id, attr, isDevice()? "device": "excitation");
 	}
@@ -52,7 +56,15 @@ public:
 	int nid1, nid2; // nid1 ~> nid2 (indicates flow if mounted with excitation device, )
 	int did;        // type id of a device 
 	int rid;        // id of this relation 
-	RcRel_t( int nrid ):rid(nrid),nid1(-1),nid2(-1),did(-1){}
+	int vid;        // nodal vector index 
+	RcRel_t( int nrid ):rid(nrid),nid1(-1),nid2(-1),did(-1),vid(-1){}
+};
+
+class RcEnt_t {
+public:
+	RcEnt_t():fdir(0){}
+	std::vector<int> addDev, subDev; // index to excitation devices 
+	int fdir; // flow direction +/- 1
 };
 
 class RcSys_t {
@@ -64,13 +76,40 @@ public:
 		vDev.back().type = RcDev_t::Gnd;
 		vDev.back().print();
 	}
+	~RcSys_t(){
+		clearPos2Ent();
+	}
 
 	int nObj, nRel;
 	std::map<std::string, int> name2id;
 	std::vector<RcDev_t> vDev;
 	std::vector<RcRel_t> vRel;
 
+	std::vector<int> vNodalVolt;
+	std::vector<int> vNodalCurr;
+	std::vector<RcEnt_t> vExcitation;
+
+	std::map< std::pair<int,int>, RcEnt_t* > pos2sus; // susceptance matrix 
+	std::map< std::pair<int,int>, RcEnt_t* > pos2ent; // conductance matrix 
+	void entMountDev( int nid1, int nid2, int did, bool pol = false );
+	void susMountDev( int nid1, int nid2, int did, bool pol = false );
+	void entAddFlow( int nid, int rvid, bool pol = false );
+	void clearPos2Ent(){
+		std::map< std::pair<int,int>, RcEnt_t* >::iterator itr;
+		for( itr = pos2ent.begin(); itr != pos2ent.end(); itr ++ )
+			delete itr->second;
+		pos2ent.clear();
+
+		for( itr = pos2sus.begin(); itr != pos2sus.end(); itr ++ )
+			delete itr->second;
+		pos2sus.clear();
+	}
+
+	void printEnt( RcEnt_t * pEnt, bool pol = false );
+	void printPos2Ent();
+
 	int parse( char * rcfileIn );
+	int mna();
 	int getNode( std::string& name ){
 		if( name2id.find(name) == name2id.end() ){
 			vDev.push_back( RcDev_t(nObj++) );
@@ -120,12 +159,22 @@ public:
 		did = vRel[rid]. did;
 		printf("\t");
 		if( vDev[did].isExcitation() ){
-			printf("%s %3s %s %3s %s"
-				, vDev[nid1].name.c_str()
-				, "-->"
-				, vDev[did].name.c_str()
-				, "-->"
-				, vDev[nid2].name.c_str() );
+			if( RcDev_t::Vlt == vDev[did].type ){
+				printf("%s %3s %s %3s %s"
+					, vDev[nid1].name.c_str()
+					, "(+ "
+					, vDev[did].name.c_str()
+					, " -)"
+					, vDev[nid2].name.c_str() );
+			} else {
+				printf("%s %3s %s %3s %s"
+					, vDev[nid1].name.c_str()
+					, "-->"
+					, vDev[did].name.c_str()
+					, "-->"
+					, vDev[nid2].name.c_str() );
+			}
+			
 		} else {
 			printf("%s %3s %s %3s %s"
 				, vDev[nid1].name.c_str()
