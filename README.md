@@ -14,8 +14,9 @@ Generate KCL system
 ![image](https://github.com/superpi15/narom/blob/main/rc.png)
 
 	g1 1s
-	g2 2s
-	g3 3s
+	g2 0.5s
+	g3 0.33s
+	g4 0.25s
 	c1 3f
 	c2 2f
 	c3 1f
@@ -26,7 +27,8 @@ Generate KCL system
 	n2  n3  g2
 	n3 gnd  c2
 	n3  n4  g3
-	n4 gnd  c3
+	n5  n4  c3
+	n5 gnd  g4
 ## Result
 	building mna ... 
 	  0: n1
