@@ -171,9 +171,9 @@ public:
 			} else {
 				printf("%s %3s %s %3s %s"
 					, vDev[nid1].name.c_str()
-					, "-->"
+					, "(<-"
 					, vDev[did].name.c_str()
-					, "-->"
+					, "<-)"
 					, vDev[nid2].name.c_str() );
 			}
 			
