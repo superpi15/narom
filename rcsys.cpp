@@ -163,9 +163,9 @@ int RcSys_t::mna(){
 		} else
 		if( RcDev_t::Amp == vDev[did].type ){
 			if( 0 < nid1 )
-				vExcitation[ vDev[nid1].vid ].subDev.push_back(did);
+				vExcitation[ vDev[nid1].vid ].addDev.push_back(did);
 			if( 0 < nid2 )
-				vExcitation[ vDev[nid2].vid ].addDev.push_back(did);
+				vExcitation[ vDev[nid2].vid ].subDev.push_back(did);
 		}
 	}
 }
