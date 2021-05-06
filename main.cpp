@@ -27,5 +27,12 @@ int main( int argc, char ** argv ){
 	}
 	rcsys.mna();
 	rcsys.printPos2Ent();
+
+	if( argc >= 3 ){
+		char * rcfileOut = argv[2];
+		std::ofstream ostr( rcfileOut );
+		rcsys.writePos2Ent(ostr);
+		ostr.close();
+	}
 	return 1;
 }

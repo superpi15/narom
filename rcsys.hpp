@@ -24,10 +24,10 @@ public:
 	int id;
 	int vid; // nodal vector index
 	std::string name;
+	std::string rval; // string version attribute
 	std::multimap<int,int> conn; // < dest, bridge id>
-	float attr;
 	Type_t type;
-	RcDev_t(int nid):id(nid),type(Undef),attr(0),vid(-1){}
+	RcDev_t(int nid):id(nid),type(Undef),vid(-1){}
 	const char * typeName(){
 		switch(type){
 			case Undef: return "Undef";
@@ -47,7 +47,7 @@ public:
 	bool isDevice() const { return Node != type && Gnd != type; }
 	bool needCurr() const { return Vlt == type || Hen == type; }
 	void print(){
-		printf("%12s %12s id= %4d attr= %12.5f (Type = %s)\n", typeName(), name.c_str(), id, attr, isDevice()? "device": "excitation");
+		printf("%12s %12s id= %4d attr= %12.5s (Type = %s)\n", typeName(), name.c_str(), id, rval.c_str(), isDevice()? "device": "excitation");
 	}
 };
 
@@ -89,6 +89,7 @@ public:
 	std::vector<int> vNodalCurr;
 	std::vector<RcEnt_t> vExcitation;
 
+	std::string sMatrix, gMatrix, eVector;
 	std::map< std::pair<int,int>, RcEnt_t* > pos2sus; // susceptance matrix 
 	std::map< std::pair<int,int>, RcEnt_t* > pos2ent; // conductance matrix 
 	void entMountDev( int nid1, int nid2, int did, bool pol = false );
@@ -106,8 +107,9 @@ public:
 	}
 
 	void printEnt( RcEnt_t * pEnt, bool pol = false );
+	void writeEnt( std::ostream&, RcEnt_t * pEnt, bool pol = false );
 	void printPos2Ent();
-
+	void writePos2Ent( std::ostream& );
 	int parse( char * rcfileIn );
 	int mna();
 	int getNode( std::string& name ){
