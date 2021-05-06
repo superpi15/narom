@@ -1,7 +1,10 @@
+.susceptance C
+.conductance G
+.excitation  E
 g1 1s
-g2 0.5s
-g3 0.33s
-g4 0.25s
+g2 1/2s
+g3 1/3s
+g4 1/4s
 c1 3f
 c2 2f
 c3 1f
