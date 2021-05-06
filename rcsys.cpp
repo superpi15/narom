@@ -46,7 +46,7 @@ int RcSys_t::parse( char * rcfileIn ){
 				continue;
 			}
 
-			if( w[1].size() < 2 || (w[1].back() != 's' && w[1].back() != 'f' && w[1].back() != 'v' && w[1].back() != 'a') ){
+			if( w[1].size() < 2 || (w[1].back() != 's' && w[1].back() != 'f' && w[1].back() != 'v' && w[1].back() != 'a' && w[1].back() != 'h') ){
 				nErrors ++ ;
 				printf("syntax error at line %d: \'%s\'\n", nLines, line.c_str());
 				return 0;
@@ -60,6 +60,7 @@ int RcSys_t::parse( char * rcfileIn ){
 				case 'f': vDev.back().type = RcDev_t::Far; break;
 				case 'v': vDev.back().type = RcDev_t::Vlt; break;
 				case 'a': vDev.back().type = RcDev_t::Amp; break;
+				case 'h': vDev.back().type = RcDev_t::Hen; break;
 			}
 			w[1].back() = ' ';
 			vDev.back().rval = w[1];
@@ -153,7 +154,7 @@ int RcSys_t::mna(){
 			vExcitation[ vRel[i].vid ].addDev.push_back(did);
 		}
 		else
-		if( RcDev_t::Far == vDev[did].type ){
+		if( RcDev_t::Far == vDev[did].type ){ // capacitor 
 			if( 0 < nid1 )
 				susMountDev(nid1, nid1, did);
 			if( 0 < nid2 )
@@ -166,6 +167,13 @@ int RcSys_t::mna(){
 				vExcitation[ vDev[nid1].vid ].addDev.push_back(did);
 			if( 0 < nid2 )
 				vExcitation[ vDev[nid2].vid ].subDev.push_back(did);
+		} else
+		if( RcDev_t::Hen == vDev[did].type ){
+			if( 0 < nid1 )
+				entAddFlow(nid1, vRel[i].vid, 1); // flow out is the inversed flow in 
+			if( 0 < nid2 )
+				entAddFlow(nid2, vRel[i].vid, 0);
+			susMountInductor(vRel[i].vid, did);
 		}
 	}
 }
@@ -306,7 +314,14 @@ void RcSys_t::susMountDev( int nid1, int nid2, int did, bool pol ){
 		pos2sus[pos]->addDev.push_back(did);
 	else
 		pos2sus[pos]->subDev.push_back(did);
-	;
+}
+
+void RcSys_t::susMountInductor( int rvid, int did ){
+	int vid = rvid;
+	std::pair<int,int> pos(vid,vid);
+	if( NULL == pos2sus[pos] )
+		pos2sus[pos] = new RcEnt_t;
+	pos2sus[pos]->addDev.push_back(did);
 }
 
 void RcSys_t::entMountDev( int nid1, int nid2, int did, bool pol ){

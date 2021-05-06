@@ -94,6 +94,7 @@ public:
 	std::map< std::pair<int,int>, RcEnt_t* > pos2ent; // conductance matrix 
 	void entMountDev( int nid1, int nid2, int did, bool pol = false );
 	void susMountDev( int nid1, int nid2, int did, bool pol = false );
+	void susMountInductor( int rvid, int did );
 	void entAddFlow( int nid, int rvid, bool pol = false );
 	void clearPos2Ent(){
 		std::map< std::pair<int,int>, RcEnt_t* >::iterator itr;
@@ -178,12 +179,21 @@ public:
 			}
 			
 		} else {
-			printf("%s %3s %s %3s %s"
-				, vDev[nid1].name.c_str()
-				, "---"
-				, vDev[did].name.c_str()
-				, "---"
-				, vDev[nid2].name.c_str() );
+			if( RcDev_t::Hen == vDev[did].type ){
+				printf("%s %3s %s %3s %s"
+					, vDev[nid1].name.c_str()
+					, "(<-"
+					, vDev[did].name.c_str()
+					, "<-)"
+					, vDev[nid2].name.c_str() );
+			} else {
+				printf("%s %3s %s %3s %s"
+					, vDev[nid1].name.c_str()
+					, "---"
+					, vDev[did].name.c_str()
+					, "---"
+					, vDev[nid2].name.c_str() );
+			}
 		}
 		printf("\n");
 	}
