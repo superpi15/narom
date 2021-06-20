@@ -29,9 +29,9 @@ int main( int argc, char ** argv ){
 	rcsys.printPos2Ent();
 
 	if( argc >= 3 ){
-		char * rcfileOut = argv[2];
-		std::ofstream ostr( rcfileOut );
-		rcsys.writePos2Ent(ostr);
+		std::string rcfileOut = argv[2];
+		std::ofstream ostr( rcfileOut.c_str() );
+		rcsys.writePos2Ent(ostr, rcfileOut);
 		ostr.close();
 	}
 	return 1;

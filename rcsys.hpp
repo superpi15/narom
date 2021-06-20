@@ -82,6 +82,7 @@ public:
 
 	int nObj, nRel;
 	std::map<std::string, int> name2id;
+	std::vector<std::string> ndNames;
 	std::vector<RcDev_t> vDev;
 	std::vector<RcRel_t> vRel;
 
@@ -89,7 +90,7 @@ public:
 	std::vector<int> vNodalCurr;
 	std::vector<RcEnt_t> vExcitation;
 
-	std::string sMatrix, gMatrix, eVector;
+	std::string sMatrix, gMatrix, eVector, ndNameVector;
 	std::map< std::pair<int,int>, RcEnt_t* > pos2sus; // susceptance matrix 
 	std::map< std::pair<int,int>, RcEnt_t* > pos2ent; // conductance matrix 
 	void entMountDev( int nid1, int nid2, int did, bool pol = false );
@@ -110,7 +111,7 @@ public:
 	void printEnt( RcEnt_t * pEnt, bool pol = false );
 	void writeEnt( std::ostream&, RcEnt_t * pEnt, bool pol = false );
 	void printPos2Ent();
-	void writePos2Ent( std::ostream& );
+	void writePos2Ent( std::ostream&, std::string& rcfileOut );
 	int parse( char * rcfileIn );
 	int mna();
 	int getNode( std::string& name ){
