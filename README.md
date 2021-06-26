@@ -3,7 +3,7 @@ Generate KCL system
 
 ## Rule
 * node: a node is a vertex
-* relation: a relation is an edge optional mounting a device 
+* relation: a relation is an edge optionally mounting a device 
 * device: 
 	* voltage: volt
 	* current: ampere
